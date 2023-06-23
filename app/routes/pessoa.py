@@ -45,7 +45,7 @@ def get_pessoa_fisica(id):
 @app.route('/pessoas_fisicas', methods=['POST'])
 def create_pessoa_fisica():
     data = request.get_json()
-    if not data or 'cod_prop_pf' not in data or 'cpf_prop' not in data or 'nome_pf' not in data or 'dt_nasc_pf' not in data or 'rg_pf' not in data:
+    if not data or 'cpf_prop' not in data or 'nome_pf' not in data or 'dt_nasc_pf' not in data or 'rg_pf' not in data:
         return jsonify({'message': 'Dados da Pessoa Física ausentes ou inválidos'}), 400
     new_pessoa_fisica = PessoaFisica(
         cod_prop_pf=data['cod_prop_pf'],
@@ -66,7 +66,7 @@ def update_pessoa_fisica(id):
     if not pessoa_fisica:
         return jsonify({'message': 'Pessoa Física não encontrada'}), 404
     data = request.get_json()
-    if not data or 'cod_prop_pf' not in data or 'cpf_prop' not in data or 'nome_pf' not in data or 'dt_nasc_pf' not in data or 'rg_pf' not in data:
+    if not data or 'cpf_prop' not in data or 'nome_pf' not in data or 'dt_nasc_pf' not in data or 'rg_pf' not in data:
         return jsonify({'message': 'Dados da Pessoa Física ausentes ou inválidos'}), 400
     pessoa_fisica.cod_prop_pf = data['cod_prop_pf']
     pessoa_fisica.cpf_prop = data['cpf_prop']
@@ -120,7 +120,7 @@ def get_pessoa_juridica(id):
 @app.route('/pessoas_juridicas', methods=['POST'])
 def create_pessoa_juridica():
     data = request.get_json()
-    if not data or 'cod_prop_pj' not in data or 'cnpj_prop' not in data or 'razao_social_pj' not in data or 'dt_cria_pj' not in data:
+    if not data or 'cnpj_prop' not in data or 'razao_social_pj' not in data or 'dt_cria_pj' not in data:
         return jsonify({'message': 'Dados da Pessoa Jurídica ausentes ou inválidos'}), 400
     new_pessoa_juridica = PessoaJuridica(
         cod_prop_pj=data['cod_prop_pj'],
@@ -139,7 +139,7 @@ def update_pessoa_juridica(id):
     if not pessoa_juridica:
         return jsonify({'message': 'Pessoa Jurídica não encontrada'}), 404
     data = request.get_json()
-    if not data or 'cod_prop_pj' not in data or 'cnpj_prop' not in data or 'razao_social_pj' not in data or 'dt_cria_pj' not in data:
+    if not data or 'cnpj_prop' not in data or 'razao_social_pj' not in data or 'dt_cria_pj' not in data:
         return jsonify({'message': 'Dados da Pessoa Jurídica ausentes ou inválidos'}), 400
     pessoa_juridica.cod_prop_pj = data['cod_prop_pj']
     pessoa_juridica.cnpj_prop = data['cnpj_prop']
