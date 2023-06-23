@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD com Bootstrap</title>
+    <!-- Inclua os arquivos CSS do Bootstrap 4.3.1 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CRUD com Bootstrap</h1>
+
+        <!-- Tabela de Produtos -->
+        <h2>Produtos</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="produtos-table">
+                <!-- Os produtos serão carregados dinamicamente aqui -->
+            </tbody>
+        </table>
+
+        <!-- Formulário de Cadastro/Edição de Produto -->
+        <h2>Cadastro/Edição de Produto</h2>
+        <form id="produto-form">
+            <div class="form-group">
+                <label for="desc_produto">Descrição do Produto:</label>
+                <input type="text" class="form-control" id="desc_produto" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+
+        <!-- Tabela de Produções -->
+        <h2>Produções</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código Propriedade</th>
+                    <th>Código Produto</th>
+                    <th>Mês Inicial Colheita Previsto</th>
+                    <th>Mês Final Colheita Previsto</th>
+                    <th>Quantidade Prevista de Colheita</th>
+                    <th>Mês Inicial Colheita Real</th>
+                    <th>Mês Final Colheita Real</th>
+                    <th>Quantidade Real Colhida</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="producoes-table">
+                <!-- As produções serão carregadas dinamicamente aqui -->
+            </tbody>
+        </table>
+
+        <!-- Formulário de Cadastro/Edição de Produção -->
+        <h2>Cadastro/Edição de Produção</h2>
+        <form id="producao-form">
+            <div class="form-group">
+                <label for="cod_propriedade">Código Propriedade:</label>
+                <input type="text" class="form-control" id="cod_propriedade" required>
+            </div>
+            <div class="form-group">
+                <label for="cod_produto">Código Produto:</label>
+                <input type="text" class="form-control" id="cod_produto" required>
+            </div>
+            <div class="form-group">
+                <label for="mes_ini_colheita_prov">Mês Inicial Colheita Previsto:</label>
+                <input type="text" class="form-control" id="mes_ini_colheita_prov" required>
+            </div>
+            <div class="form-group">
+                <label for="mes_fin_colheita_prov">Mês Final Colheita Previsto:</label>
+                <input type="text" class="form-control" id="mes_fin_colheita_prov" required>
+            </div>
+            <div class="form-group">
+                <label for="qtd_prov_colheita">Quantidade Prevista de Colheita:</label>
+                <input type="text" class="form-control" id="qtd_prov_colheita" required>
+            </div>
+            <div class="form-group">
+                <label for="mes_ini_colheita_real">Mês Inicial Colheita Real:</label>
+                <input type="text" class="form-control" id="mes_ini_colheita_real" required>
+            </div>
+            <div class="form-group">
+                <label for="mes_fin_colheita_real">Mês Final Colheita Real:</label>
+                <input type="text" class="form-control" id="mes_fin_colheita_real" required>
+            </div>
+            <div class="form-group">
+                <label for="qtd_real_colhida">Quantidade Real Colhida:</label>
+                <input type="text" class="form-control" id="qtd_real_colhida" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+
+    <!-- Inclua os arquivos JavaScript do jQuery 3.6 e do Bootstrap 4.3.1 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // Função para carregar os produtos da API
+        function loadProdutos() {
+            $.ajax({
+                url: '/produtos',
+                type: 'GET',
+                success: function(response) {
+                    var produtos = response.produtos;
+                    var produtosTable = $('#produtos-table');
+                    produtosTable.empty();
+                    produtos.forEach(function(produto) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(produto.cod_produto));
+                        row.append($('<td>').text(produto.desc_produto));
+                        var actions = $('<td>');
+                        actions.append($('<button>').text('Editar').addClass('btn btn-sm btn-primary edit-btn').data('id', produto.cod_produto));
+                        actions.append(' ');
+                        actions.append($('<button>').text('Excluir').addClass('btn btn-sm btn-danger delete-btn').data('id', produto.cod_produto));
+                        row.append(actions);
+                        produtosTable.append(row);
+                    });
+                }
+            });
+        }
+
+        // Função para carregar os dados de um produto para edição
+        function loadProdutoData(id) {
+            $.ajax({
+                url: '/produtos/' + id,
+                type: 'GET',
+                success: function(response) {
+                    var produto = response.produto;
+                    $('#desc_produto').val(produto.desc_produto);
+                }
+            });
+        }
+
+        // Função para limpar o formulário de produto
+        function clearProdutoForm() {
+            $('#produto-form').removeData('id');
+            $('#desc_produto').val('');
+        }
+
+        // Ação de envio do formulário de produto (Cadastro/Edição)
+        $('#produto-form').submit(function(event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+            var method = id ? 'PUT' : 'POST';
+            var url = id ? '/produtos/' + id : '/produtos';
+            $.ajax({
+                url: url,
+                type: method,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({ desc_produto: $('#desc_produto').val() }),
+                success: function(response) {
+                    alert(response.message);
+                    loadProdutos();
+                    clearProdutoForm();
+                },
+                error: function(response) {
+                    alert(response.responseJSON.message);
+                }
+            });
+        });
+
+        // Ação de clique no botão de edição de um produto
+        $(document).on('click', '.edit-btn', function() {
+            var id = $(this).data('id');
+            loadProdutoData(id);
+            $('#produto-form').data('id', id);
+        });
+
+        // Ação de clique no botão de exclusão de um produto
+        $(document).on('click', '.delete-btn', function() {
+            var id = $(this).data('id');
+            if (confirm('Deseja excluir este produto?')) {
+                $.ajax({
+                    url: '/produtos/' + id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        alert(response.message);
+                        loadProdutos();
+                        clearProdutoForm();
+                    },
+                    error: function(response) {
+                        alert(response.responseJSON.message);
+                    }
+                });
+            }
+        });
+
+        // Função para carregar as produções da API
+        function loadProducoes() {
+            $.ajax({
+                url: '/producoes',
+                type: 'GET',
+                success: function(response) {
+                    var producoes = response.producoes;
+                    var producoesTable = $('#producoes-table');
+                    producoesTable.empty();
+                    producoes.forEach(function(producao) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(producao.cod_propriedade));
+                        row.append($('<td>').text(producao.cod_produto));
+                        row.append($('<td>').text(producao.mes_ini_colheita_prov));
+                        row.append($('<td>').text(producao.mes_fin_colheita_prov));
+                        row.append($('<td>').text(producao.qtd_prov_colheita));
+                        row.append($('<td>').text(producao.mes_ini_colheita_real));
+                        row.append($('<td>').text(producao.mes_fin_colheita_real));
+                        row.append($('<td>').text(producao.qtd_real_colhida));
+                        var actions = $('<td>');
+                        actions.append($('<button>').text('Editar').addClass('btn btn-sm btn-primary edit-btn').data('id', producao.cod_produto));
+                        actions.append(' ');
+                        actions.append($('<button>').text('Excluir').addClass('btn btn-sm btn-danger delete-btn').data('id', producao.cod_produto));
+                        row.append(actions);
+                        producoesTable.append(row);
+                    });
+                }
+            });
+        }
+
+        // Função para carregar os dados de uma produção para edição
+        function loadProducaoData(id) {
+            $.ajax({
+                url: '/producoes/' + id,
+                type: 'GET',
+                success: function(response) {
+                    var producao = response.producao;
+                    $('#cod_propriedade').val(producao.cod_propriedade);
+                    $('#cod_produto').val(producao.cod_produto);
+                    $('#mes_ini_colheita_prov').val(producao.mes_ini_colheita_prov);
+                    $('#mes_fin_colheita_prov').val(producao.mes_fin_colheita_prov);
+                    $('#qtd_prov_colheita').val(producao.qtd_prov_colheita);
+                    $('#mes_ini_colheita_real').val(producao.mes_ini_colheita_real);
+                    $('#mes_fin_colheita_real').val(producao.mes_fin_colheita_real);
+                    $('#qtd_real_colhida').val(producao.qtd_real_colhida);
+                }
+            });
+        }
+
+        // Função para limpar o formulário de produção
+        function clearProducaoForm() {
+            $('#producao-form').removeData('id');
+            $('#cod_propriedade').val('');
+            $('#cod_produto').val('');
+            $('#mes_ini_colheita_prov').val('');
+            $('#mes_fin_colheita_prov').val('');
+            $('#qtd_prov_colheita').val('');
+            $('#mes_ini_colheita_real').val('');
+            $('#mes_fin_colheita_real').val('');
+            $('#qtd_real_colhida').val('');
+        }
+
+        // Ação de envio do formulário de produção (Cadastro/Edição)
+        $('#producao-form').submit(function(event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+            var method = id ? 'PUT' : 'POST';
+            var url = id ? '/producoes/' + id : '/producoes';
+            $.ajax({
+                url: url,
+                type: method,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    cod_propriedade: $('#cod_propriedade').val(),
+                    cod_produto: $('#cod_produto').val(),
+                    mes_ini_colheita_prov: $('#mes_ini_colheita_prov').val(),
+                    mes_fin_colheita_prov: $('#mes_fin_colheita_prov').val(),
+                    qtd_prov_colheita: $('#qtd_prov_colheita').val(),
+                    mes_ini_colheita_real: $('#mes_ini_colheita_real').val(),
+                    mes_fin_colheita_real: $('#mes_fin_colheita_real').val(),
+                    qtd_real_colhida: $('#qtd_real_colhida').val()
+                }),
+                success: function(response) {
+                    alert(response.message);
+                    loadProducoes();
+                    clearProducaoForm();
+                },
+                error: function(response) {
+                    alert(response.responseJSON.message);
+                }
+            });
+        });
+
+        // Ação de clique no botão de edição de uma produção
+        $(document).on('click', '.edit-btn', function() {
+            var id = $(this).data('id');
+            loadProducaoData(id);
+            $('#producao-form').data('id', id);
+        });
+
+        // Ação de clique no botão de exclusão de uma produção
+        $(document).on('click', '.delete-btn', function() {
+            var id = $(this).data('id');
+            if (confirm('Deseja excluir esta produção?')) {
+                $.ajax({
+                    url: '/producoes/' + id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        alert(response.message);
+                        loadProducoes();
+                        clearProducaoForm();
+                    },
+                    error: function(response) {
+                        alert(response.responseJSON.message);
+                    }
+                });
+            }
+        });
+
+        // Carregar produtos e produções ao carregar a página
+        loadProdutos();
+        loadProducoes();
+    </script>
+</body>
+</html>

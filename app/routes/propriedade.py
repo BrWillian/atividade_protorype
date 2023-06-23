@@ -1,6 +1,11 @@
 from app.models.propriedade import Propriedade
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from app import app, db
+
+
+@app.route('/propriedade')
+def index_propriedades():
+    return render_template('propriedade.html')
 
 
 @app.route('/propriedades', methods=['GET'])
@@ -9,10 +14,10 @@ def get_propriedades():
     output = []
     for propriedade in propriedades:
         propriedade_data = {
-            'id': propriedade.id,
+            'id': propriedade.cod_propriedade,
             'nome_propriedade': propriedade.nome_propriedade,
             'area': propriedade.area,
-            'cod_mun': propriedade.cod_mun,
+            'cod_mun': propriedade.cod_municipio,
             'valor_aquisicao': propriedade.valor_aquisicao
         }
         output.append(propriedade_data)

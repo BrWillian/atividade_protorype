@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propriedades</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Propriedades</h1>
+
+        <!-- Listagem de Propriedades -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Área</th>
+                    <th>Município</th>
+                    <th>Valor de Aquisição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="propriedades-list">
+                <!-- Os dados das propriedades serão carregados aqui -->
+            </tbody>
+        </table>
+
+        <!-- Modal para Editar Propriedade -->
+        <div class="modal fade" id="editar-modal" tabindex="-1" role="dialog" aria-labelledby="editar-modal-label"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editar-modal-label">Editar Propriedade</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editar-form">
+                            <input type="hidden" id="editar-id">
+                            <div class="form-group">
+                                <label for="editar-nome_propriedade">Nome:</label>
+                                <input type="text" class="form-control" id="editar-nome_propriedade" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editar-area">Área:</label>
+                                <input type="number" class="form-control" id="editar-area" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editar-cod_mun">Município:</label>
+                                <input type="text" class="form-control" id="editar-cod_mun" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editar-valor_aquisicao">Valor de Aquisição:</label>
+                                <input type="number" class="form-control" id="editar-valor_aquisicao" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="salvar-edicao-btn">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Excluir Propriedade -->
+        <div class="modal fade" id="excluir-modal" tabindex="-1" role="dialog" aria-labelledby="excluir-modal-label"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="excluir-modal-label">Excluir Propriedade</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Deseja excluir esta propriedade?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmar-exclusao-btn">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulário para criação de propriedade -->
+        <form id="criar-form">
+            <div class="form-group">
+                <label for="nome_propriedade">Nome:</label>
+                <input type="text" class="form-control" id="nome_propriedade" required>
+            </div>
+            <div class="form-group">
+                <label for="area">Área:</label>
+                <input type="number" class="form-control" id="area" required>
+            </div>
+            <div class="form-group">
+                <label for="cod_mun">Município:</label>
+                <input type="text" class="form-control" id="cod_mun" required>
+            </div>
+            <div class="form-group">
+                <label for="valor_aquisicao">Valor de Aquisição:</label>
+                <input type="number" class="form-control" id="valor_aquisicao" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Função para carregar as propriedades
+            function carregarPropriedades() {
+                $.ajax({
+                    url: '/propriedades',
+                    type: 'GET',
+                    success: function (data) {
+                        var propriedades = data.propriedades;
+                        var propriedadesList = $('#propriedades-list');
+                        propriedadesList.empty();
+                        for (var i = 0; i < propriedades.length; i++) {
+                            var propriedade = propriedades[i];
+                            var row = '<tr>' +
+                                '<td>' + propriedade.id + '</td>' +
+                                '<td>' + propriedade.nome_propriedade + '</td>' +
+                                '<td>' + propriedade.area + '</td>' +
+                                '<td>' + propriedade.cod_mun + '</td>' +
+                                '<td>' + propriedade.valor_aquisicao + '</td>' +
+                                '<td>' +
+                                '<button class="btn btn-sm btn-primary editar-btn" data-id="' + propriedade.id +
+                                '">Editar</button> ' +
+                                '<button class="btn btn-sm btn-danger excluir-btn" data-id="' + propriedade.id +
+                                '">Excluir</button>' +
+                                '</td>' +
+                                '</tr>';
+                            propriedadesList.append(row);
+                        }
+                    }
+                });
+            }
+
+            // Carregar as propriedades ao carregar a página
+            carregarPropriedades();
+
+            // Limpar o formulário
+            function limparFormulario() {
+                $('#editar-id').val('');
+                $('#editar-nome_propriedade').val('');
+                $('#editar-area').val('');
+                $('#editar-cod_mun').val('');
+                $('#editar-valor_aquisicao').val('');
+            }
+
+            // Exibir modal de edição
+            $('#propriedades-list').on('click', '.editar-btn', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '/propriedades/' + id,
+                    type: 'GET',
+                    success: function (data) {
+                        var propriedade = data.propriedade;
+                        $('#editar-id').val(propriedade.id);
+                        $('#editar-nome_propriedade').val(propriedade.nome_propriedade);
+                        $('#editar-area').val(propriedade.area);
+                        $('#editar-cod_mun').val(propriedade.cod_mun);
+                        $('#editar-valor_aquisicao').val(propriedade.valor_aquisicao);
+                        $('#editar-modal').modal('show');
+                    }
+                });
+            });
+
+            // Exibir modal de exclusão
+            $('#propriedades-list').on('click', '.excluir-btn', function () {
+                var id = $(this).data('id');
+                $('#confirmar-exclusao-btn').data('id', id);
+                $('#excluir-modal').modal('show');
+            });
+
+            // Salvar edição
+            $('#salvar-edicao-btn').on('click', function () {
+                var id = $('#editar-id').val();
+                var nome = $('#editar-nome_propriedade').val();
+                var area = $('#editar-area').val();
+                var cod_mun = $('#editar-cod_mun').val();
+                var valor_aquisicao = $('#editar-valor_aquisicao').val();
+                var data = {
+                    'nome_propriedade': nome,
+                    'area': area,
+                    'cod_mun': cod_mun,
+                    'valor_aquisicao': valor_aquisicao
+                };
+                $.ajax({
+                    url: '/propriedades/' + id,
+                    type: 'PUT',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        alert(data.message);
+                        carregarPropriedades();
+                        limparFormulario();
+                        $('#editar-modal').modal('hide');
+                    }
+                });
+            });
+
+            // Confirmar exclusão
+            $('#confirmar-exclusao-btn').on('click', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '/propriedades/' + id,
+                    type: 'DELETE',
+                    success: function (data) {
+                        alert(data.message);
+                        carregarPropriedades();
+                        $('#excluir-modal').modal('hide');
+                    }
+                });
+            });
+
+            // Adicionar propriedade
+            $('#criar-form').on('submit', function (event) {
+                event.preventDefault();
+                var nome = $('#nome_propriedade').val();
+                var area = $('#area').val();
+                var cod_mun = $('#cod_mun').val();
+                var valor_aquisicao = $('#valor_aquisicao').val();
+                var data = {
+                    'nome_propriedade': nome,
+                    'area': area,
+                    'cod_mun': cod_mun,
+                    'valor_aquisicao': valor_aquisicao
+                };
+                $.ajax({
+                    url: '/propriedades',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        alert(data.message);
+                        carregarPropriedades();
+                        $('#criar-form')[0].reset();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -3,6 +3,11 @@ from flask import request, jsonify, render_template
 from app import app, db
 
 
+@app.route('/produto')
+def index_produto():
+    return render_template('produto.html')
+
+
 @app.route('/produtos', methods=['GET'])
 def get_produtos():
     produtos = Produto.query.all()

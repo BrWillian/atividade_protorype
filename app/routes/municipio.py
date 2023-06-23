@@ -1,16 +1,14 @@
 from flask import request, jsonify, render_template
-from app.models.municipio import Municipio
+from app.models.propriedade import Municipio
 from app import db, app
 
-@app.route('/municipios')
+@app.route('/municipio')
 def index_municipios():
-    return render_template('municipios.html')
+    return render_template('municipio.html')
 
 @app.route('/municipios', methods=['GET'])
 def get_municipios():
     municipios = Municipio.query.all()
-    if not municipios:
-        return jsonify({'message': 'Nenhum município encontrado'}), 404
     output = []
     for municipio in municipios:
         municipio_data = {

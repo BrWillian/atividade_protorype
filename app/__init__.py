@@ -20,5 +20,5 @@ logging.basicConfig(
     ]
 )
 
-from app.routes import propriedade, proprietario, produto, pessoa, municipio
-from app.models import propriedade, produto, proprietario, pessoa
+from app.routes import propriedade, produto, pessoa, municipio
+from app.models import propriedade, produto, pessoa

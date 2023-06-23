@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CRUD de Pessoas</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h1>CRUD de Pessoas</h1>
+
+    <!-- Pessoa Física -->
+    <h2>Pessoa Física</h2>
+
+    <form id="pessoaFisicaForm">
+      <input type="hidden" id="pessoaFisicaId">
+
+      <div class="form-group">
+        <label for="cod_prop_pf">Código Propriedade:</label>
+        <input type="text" class="form-control" id="cod_prop_pf" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cpf_prop">CPF:</label>
+        <input type="text" class="form-control" id="cpf_prop" required>
+      </div>
+
+      <div class="form-group">
+        <label for="nome_pf">Nome:</label>
+        <input type="text" class="form-control" id="nome_pf" required>
+      </div>
+
+      <div class="form-group">
+        <label for="dt_nasc_pf">Data de Nascimento:</label>
+        <input type="date" class="form-control" id="dt_nasc_pf" required>
+      </div>
+
+      <div class="form-group">
+        <label for="rg_pf">RG:</label>
+        <input type="text" class="form-control" id="rg_pf" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cod_prop_conjuge">Código do Cônjuge:</label>
+        <input type="text" class="form-control" id="cod_prop_conjuge">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="button" class="btn btn-secondary" id="pessoaFisicaCancel">Cancelar</button>
+    </form>
+
+    <hr>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Data de Nascimento</th>
+          <th>RG</th>
+          <th>Código do Cônjuge</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="pessoaFisicaTableBody">
+      </tbody>
+    </table>
+
+    <!-- Pessoa Jurídica -->
+    <h2>Pessoa Jurídica</h2>
+
+    <form id="pessoaJuridicaForm">
+      <input type="hidden" id="pessoaJuridicaId">
+
+      <div class="form-group">
+        <label for="cod_prop_pj">Código Propriedade:</label>
+        <input type="text" class="form-control" id="cod_prop_pj" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cnpj_prop">CNPJ:</label>
+        <input type="text" class="form-control" id="cnpj_prop" required>
+      </div>
+
+      <div class="form-group">
+        <label for="razao_social_pj">Razão Social:</label>
+        <input type="text" class="form-control" id="razao_social_pj" required>
+      </div>
+
+      <div class="form-group">
+        <label for="dt_cria_pj">Data de Criação:</label>
+        <input type="date" class="form-control" id="dt_cria_pj" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="button" class="btn btn-secondary" id="pessoaJuridicaCancel">Cancelar</button>
+    </form>
+
+    <hr>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>CNPJ</th>
+          <th>Razão Social</th>
+          <th>Data de Criação</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="pessoaJuridicaTableBody">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Carrega os dados das Pessoas Físicas
+    function loadPessoasFisicas() {
+      $.ajax({
+        url: `/pessoas_fisicas`,
+        method: 'GET',
+        success: function (response) {
+          const pessoasFisicas = response.pessoas_fisicas;
+          let tableRows = '';
+
+          for (const pessoaFisica of pessoasFisicas) {
+            tableRows += `
+              <tr>
+                <td>${pessoaFisica.cod_prop_pf}</td>
+                <td>${pessoaFisica.cpf_prop}</td>
+                <td>${pessoaFisica.nome_pf}</td>
+                <td>${pessoaFisica.dt_nasc_pf}</td>
+                <td>${pessoaFisica.rg_pf}</td>
+                <td>${pessoaFisica.cod_prop_conjuge}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="editPessoaFisica(${pessoaFisica.cod_prop_pf})">Editar</button>
+                  <button class="btn btn-sm btn-danger" onclick="deletePessoaFisica(${pessoaFisica.cod_prop_pf})">Excluir</button>
+                </td>
+              </tr>
+            `;
+          }
+
+          $('#pessoaFisicaTableBody').html(tableRows);
+        }
+      });
+    }
+
+    // Carrega os dados das Pessoas Jurídicas
+    function loadPessoasJuridicas() {
+      $.ajax({
+        url: `pessoas_juridicas`,
+        method: 'GET',
+        success: function (response) {
+          const pessoasJuridicas = response.pessoas_juridicas;
+          let tableRows = '';
+
+          for (const pessoaJuridica of pessoasJuridicas) {
+            tableRows += `
+              <tr>
+                <td>${pessoaJuridica.cod_prop_pj}</td>
+                <td>${pessoaJuridica.cnpj_prop}</td>
+                <td>${pessoaJuridica.razao_social_pj}</td>
+                <td>${pessoaJuridica.dt_cria_pj}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="editPessoaJuridica(${pessoaJuridica.cod_prop_pj})">Editar</button>
+                  <button class="btn btn-sm btn-danger" onclick="deletePessoaJuridica(${pessoaJuridica.cod_prop_pj})">Excluir</button>
+                </td>
+              </tr>
+            `;
+          }
+
+          $('#pessoaJuridicaTableBody').html(tableRows);
+        }
+      });
+    }
+
+    // Carrega os dados ao carregar a página
+    $(document).ready(function () {
+      loadPessoasFisicas();
+      loadPessoasJuridicas();
+    });
+
+    // Limpa os campos do formulário de Pessoa Física
+    function clearPessoaFisicaForm() {
+      $('#pessoaFisicaId').val('');
+      $('#cod_prop_pf').val('');
+      $('#cpf_prop').val('');
+      $('#nome_pf').val('');
+      $('#dt_nasc_pf').val('');
+      $('#rg_pf').val('');
+      $('#cod_prop_conjuge').val('');
+    }
+
+    // Limpa os campos do formulário de Pessoa Jurídica
+    function clearPessoaJuridicaForm() {
+      $('#pessoaJuridicaId').val('');
+      $('#cod_prop_pj').val('');
+      $('#cnpj_prop').val('');
+      $('#razao_social_pj').val('');
+      $('#dt_cria_pj').val('');
+    }
+
+    // Abre o formulário de edição de Pessoa Física com os dados preenchidos
+    function editPessoaFisica(cod_prop_pf) {
+      $.ajax({
+        url: `/pessoas_fisicas/${cod_prop_pf}`,
+        method: 'GET',
+        success: function (response) {
+          const pessoaFisica = response.pessoa_fisica;
+
+          $('#pessoaFisicaId').val(pessoaFisica.cod_prop_pf);
+          $('#cod_prop_pf').val(pessoaFisica.cod_prop_pf);
+          $('#cpf_prop').val(pessoaFisica.cpf_prop);
+          $('#nome_pf').val(pessoaFisica.nome_pf);
+          $('#dt_nasc_pf').val(pessoaFisica.dt_nasc_pf);
+          $('#rg_pf').val(pessoaFisica.rg_pf);
+          $('#cod_prop_conjuge').val(pessoaFisica.cod_prop_conjuge);
+        }
+      });
+    }
+
+    // Abre o formulário de edição de Pessoa Jurídica com os dados preenchidos
+    function editPessoaJuridica(cod_prop_pj) {
+      $.ajax({
+        url: `/pessoas_juridicas/${cod_prop_pj}`,
+        method: 'GET',
+        success: function (response) {
+          const pessoaJuridica = response.pessoa_juridica;
+
+          $('#pessoaJuridicaId').val(pessoaJuridica.cod_prop_pj);
+          $('#cod_prop_pj').val(pessoaJuridica.cod_prop_pj);
+          $('#cnpj_prop').val(pessoaJuridica.cnpj_prop);
+          $('#razao_social_pj').val(pessoaJuridica.razao_social_pj);
+          $('#dt_cria_pj').val(pessoaJuridica.dt_cria_pj);
+        }
+      });
+    }
+
+    // Envia uma requisição para criar ou atualizar uma Pessoa Física
+    $('#pessoaFisicaForm').submit(function (event) {
+      event.preventDefault();
+
+      const cod_prop_pf = $('#cod_prop_pf').val();
+      const cpf_prop = $('#cpf_prop').val();
+      const nome_pf = $('#nome_pf').val();
+      const dt_nasc_pf = $('#dt_nasc_pf').val();
+      const rg_pf = $('#rg_pf').val();
+      const cod_prop_conjuge = $('#cod_prop_conjuge').val();
+
+      const data = {
+        cod_prop_pf: cod_prop_pf,
+        cpf_prop: cpf_prop,
+        nome_pf: nome_pf,
+        dt_nasc_pf: dt_nasc_pf,
+        rg_pf: rg_pf,
+        cod_prop_conjuge: cod_prop_conjuge
+      };
+
+      let url = `/pessoas_fisicas`;
+
+      if (cod_prop_pf !== '') {
+        url += `/${cod_prop_pf}`;
+        alert("Propriedade Inexistente");
+      }
+
+      $.ajax({
+        url: url,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function () {
+          clearPessoaFisicaForm();
+          loadPessoasFisicas();
+        }
+      });
+    });
+
+    // Envia uma requisição para criar ou atualizar uma Pessoa Jurídica
+    $('#pessoaJuridicaForm').submit(function (event) {
+      event.preventDefault();
+
+      const cod_prop_pj = $('#cod_prop_pj').val();
+      const cnpj_prop = $('#cnpj_prop').val();
+      const razao_social_pj = $('#razao_social_pj').val();
+      const dt_cria_pj = $('#dt_cria_pj').val();
+
+      const data = {
+        cod_prop_pj: cod_prop_pj,
+        cnpj_prop: cnpj_prop,
+        razao_social_pj: razao_social_pj,
+        dt_cria_pj: dt_cria_pj
+      };
+
+      let url = `/pessoas_juridicas`;
+
+      if (cod_prop_pj !== '') {
+        url += `/${cod_prop_pj}`;
+        alert("Propriedade Inexistente");
+      }
+
+      $.ajax({
+        url: url,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function () {
+          clearPessoaJuridicaForm();
+          loadPessoasJuridicas();
+        }
+      });
+    });
+
+    // Envia uma requisição para excluir uma Pessoa Física
+    function deletePessoaFisica(cod_prop_pf) {
+      if (confirm('Tem certeza que deseja excluir esta Pessoa Física?')) {
+        $.ajax({
+          url: `/pessoas_fisicas/${cod_prop_pf}`,
+          method: 'DELETE',
+          success: function () {
+            loadPessoasFisicas();
+          }
+        });
+      }
+    }
+
+    // Envia uma requisição para excluir uma Pessoa Jurídica
+    function deletePessoaJuridica(cod_prop_pj) {
+      if (confirm('Tem certeza que deseja excluir esta Pessoa Jurídica?')) {
+        $.ajax({
+          url: `/pessoas_juridicas/${cod_prop_pj}`,
+          method: 'DELETE',
+          success: function () {
+            loadPessoasJuridicas();
+          }
+        });
+      }
+    }
+
+    // Cancela a edição da Pessoa Física
+    $('#pessoaFisicaCancel').click(function () {
+      clearPessoaFisicaForm();
+    });
+
+    // Cancela a edição da Pessoa Jurídica
+    $('#pessoaJuridicaCancel').click(function () {
+      clearPessoaJuridicaForm();
+    });
+  </script>
+</body>
+
+</html>

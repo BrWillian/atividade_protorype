@@ -1,14 +1,17 @@
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from app.models.pessoa import PessoaFisica, PessoaJuridica
 from app import db, app
 import datetime
 
 
+@app.route('/pessoa')
+def index_pessoas():
+    return render_template('pessoa.html')
+
+
 @app.route('/pessoas_fisicas', methods=['GET'])
 def get_pessoas_fisicas():
     pessoas_fisicas = PessoaFisica.query.all()
-    if not pessoas_fisicas:
-        return jsonify({'message': 'Nenhuma Pessoa Física encontrada'}), 404
     output = []
     for pessoa_fisica in pessoas_fisicas:
         pessoa_fisica_data = {
@@ -88,8 +91,6 @@ def delete_pessoa_fisica(id):
 @app.route('/pessoas_juridicas', methods=['GET'])
 def get_pessoas_juridicas():
     pessoas_juridicas = PessoaJuridica.query.all()
-    if not pessoas_juridicas:
-        return jsonify({'message': 'Nenhuma Pessoa Jurídica encontrada'}), 404
     output = []
     for pessoa_juridica in pessoas_juridicas:
         pessoa_juridica_data = {

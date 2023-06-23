@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CRUD de Municípios</title>
+  <!-- Adicione os links para os estilos do Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>CRUD de Municípios</h1>
+
+    <!-- Formulário de criação -->
+    <h2>Criar Município</h2>
+    <form id="create-form">
+      <div class="form-group">
+        <label for="nome_municipio">Nome:</label>
+        <input type="text" class="form-control" id="nome_municipio" required>
+      </div>
+      <div class="form-group">
+        <label for="uf_municipio">UF:</label>
+        <input type="text" class="form-control" id="uf_municipio" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Criar</button>
+    </form>
+
+    <!-- Tabela de exibição dos municípios -->
+    <h2>Municípios</h2>
+    <table id="municipios-table" class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>UF</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="edit-modal-label">Editar Município</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-form">
+              <div class="form-group">
+                <label for="edit-nome_municipio">Nome:</label>
+                <input type="text" class="form-control" id="edit-nome_municipio" required>
+              </div>
+              <div class="form-group">
+                <label for="edit-uf_municipio">UF:</label>
+                <input type="text" class="form-control" id="edit-uf_municipio" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="save-changes-btn">Salvar Alterações</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Exclusão -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="delete-modal-label">Excluir Município</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza de que deseja excluir o município?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="delete-confirm-btn">Confirmar Exclusão</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adicione os scripts do Bootstrap e do jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script>
+    // Variáveis globais para armazenar o nome do município em edição e exclusão
+    var editingMunicipio = '';
+    var deletingMunicipio = '';
+
+    // Função para carregar os municípios na tabela
+    function loadMunicipios() {
+      $.ajax({
+        url: '/municipios',
+        method: 'GET',
+        success: function (response) {
+          var municipios = response.municipios;
+          var tableBody = $('#municipios-table tbody');
+          tableBody.empty();
+          municipios.forEach(function (municipio) {
+            var row = '<tr>';
+            row += '<td>' + municipio.nome_municipio + '</td>';
+            row += '<td>' + municipio.uf_municipio + '</td>';
+            row += '<td>';
+            row += '<button class="btn btn-sm btn-info edit-btn" data-nome="' + municipio.nome_municipio + '">Editar</button> ';
+            row += '<button class="btn btn-sm btn-danger delete-btn" data-nome="' + municipio.nome_municipio + '">Excluir</button>';
+            row += '</td>';
+            row += '</tr>';
+            tableBody.append(row);
+          });
+        }
+      });
+    }
+
+    // Função para abrir o modal de edição com os dados preenchidos
+    function openEditModal(nome) {
+      $.ajax({
+        url: '/municipios/' + nome,
+        method: 'GET',
+        success: function (response) {
+          var municipio = response.municipio;
+          $('#edit-nome_municipio').val(municipio.nome_municipio);
+          $('#edit-uf_municipio').val(municipio.uf_municipio);
+          editingMunicipio = municipio.nome_municipio;
+          $('#edit-modal').modal('show');
+        }
+      });
+    }
+
+    // Função para abrir o modal de exclusão
+    function openDeleteModal(nome) {
+      deletingMunicipio = nome;
+      $('#delete-modal').modal('show');
+    }
+
+    // Função para atualizar um município
+    $('#save-changes-btn').click(function () {
+      var nome = editingMunicipio;
+      var novoNome = $('#edit-nome_municipio').val();
+      var uf = $('#edit-uf_municipio').val();
+      $.ajax({
+        url: '/municipios/' + nome,
+        method: 'PUT',
+        data: JSON.stringify({ nome_municipio: novoNome, uf_municipio: uf }),
+        contentType: 'application/json',
+        success: function () {
+          $('#edit-modal').modal('hide');
+          loadMunicipios();
+        }
+      });
+    });
+
+    // Função para excluir um município
+    $('#delete-confirm-btn').click(function () {
+      var nome = deletingMunicipio;
+      $.ajax({
+        url: '/municipios/' + nome,
+        method: 'DELETE',
+        success: function () {
+          $('#delete-modal').modal('hide');
+          loadMunicipios();
+        }
+      });
+    });
+
+    // Função para criar um município
+    $('#create-form').submit(function (event) {
+      event.preventDefault();
+      var nome = $('#nome_municipio').val();
+      var uf = $('#uf_municipio').val();
+      $.ajax({
+        url: '/municipios',
+        method: 'POST',
+        data: JSON.stringify({ nome_municipio: nome, uf_municipio: uf }),
+        contentType: 'application/json',
+        success: function () {
+          $('#nome_municipio').val('');
+          $('#uf_municipio').val('');
+          loadMunicipios();
+        }
+      });
+    });
+
+    // Função para exibir o modal de edição quando o botão "Editar" for clicado
+    $('#municipios-table').on('click', '.edit-btn', function () {
+      var nome = $(this).data('nome');
+      openEditModal(nome);
+    });
+
+    // Função para exibir o modal de exclusão quando o botão "Excluir" for clicado
+    $('#municipios-table').on('click', '.delete-btn', function () {
+      var nome = $(this).data('nome');
+      openDeleteModal(nome);
+    });
+
+    // Carregar os municípios quando a página carregar
+    loadMunicipios();
+  </script>
+</body>
+</html>
