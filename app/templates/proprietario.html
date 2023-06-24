@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Property Management System</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+  <!-- Create a new Proprietario -->
+  <div class="container">
+    <h1>Create Proprietario</h1>
+    <form id="createProprietarioForm">
+      <div class="form-group">
+        <label for="cod_prop_pj">Cod Prop PJ:</label>
+        <input type="text" class="form-control" id="cod_prop_pj" name="cod_prop_pj">
+      </div>
+      <div class="form-group">
+        <label for="cod_prop_pf">Cod Prop PF:</label>
+        <input type="text" class="form-control" id="cod_prop_pf" name="cod_prop_pf">
+      </div>
+      <div class="form-group">
+        <label for="fone1">Fone 1:</label>
+        <input type="text" class="form-control" id="fone1" name="fone1">
+      </div>
+      <div class="form-group">
+        <label for="fone2">Fone 2:</label>
+        <input type="text" class="form-control" id="fone2" name="fone2">
+      </div>
+      <div class="form-group">
+        <label for="fone3">Fone 3:</label>
+        <input type="text" class="form-control" id="fone3" name="fone3">
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+  </div>
+
+  <!-- Get information about a specific Proprietario -->
+  <div class="container">
+    <h1>Get Proprietario</h1>
+    <form id="getProprietarioForm">
+      <div class="form-group">
+        <label for="cod_proprietario">Cod Proprietario:</label>
+        <input type="number" class="form-control" id="cod_proprietario" name="cod_proprietario">
+      </div>
+      <button type="submit" class="btn btn-primary">Get</button>
+    </form>
+    <div id="proprietarioData" style="display: none;">
+      <h2>Proprietario Data</h2>
+      <table class="table">
+        <tr>
+          <th>Cod Proprietario</th>
+          <th>Cod Prop PJ</th>
+          <th>Cod Prop PF</th>
+          <th>Fone 1</th>
+          <th>Fone 2</th>
+          <th>Fone 3</th>
+        </tr>
+        <tr>
+          <td id="proprietarioCod"></td>
+          <td id="proprietarioCodPropPJ"></td>
+          <td id="proprietarioCodPropPF"></td>
+          <td id="proprietarioFone1"></td>
+          <td id="proprietarioFone2"></td>
+          <td id="proprietarioFone3"></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Update information of a specific Proprietario -->
+  <div class="container">
+    <h1>Update Proprietario</h1>
+    <form id="updateProprietarioForm">
+      <div class="form-group">
+        <label for="updateCod_proprietario">Cod Proprietario:</label>
+        <input type="number" class="form-control" id="updateCod_proprietario" name="updateCod_proprietario">
+      </div>
+      <div class="form-group">
+        <label for="updateCod_prop_pj">Cod Prop PJ:</label>
+        <input type="text" class="form-control" id="updateCod_prop_pj" name="updateCod_prop_pj">
+      </div>
+      <div class="form-group">
+        <label for="updateCod_prop_pf">Cod Prop PF:</label>
+        <input type="text" class="form-control" id="updateCod_prop_pf" name="updateCod_prop_pf">
+      </div>
+      <div class="form-group">
+        <label for="updateFone1">Fone 1:</label>
+        <input type="text" class="form-control" id="updateFone1" name="updateFone1">
+      </div>
+      <div class="form-group">
+        <label for="updateFone2">Fone 2:</label>
+        <input type="text" class="form-control" id="updateFone2" name="updateFone2">
+      </div>
+      <div class="form-group">
+        <label for="updateFone3">Fone 3:</label>
+        <input type="text" class="form-control" id="updateFone3" name="updateFone3">
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+  </div>
+
+  <!-- Delete a specific Proprietario -->
+  <div class="container">
+    <h1>Delete Proprietario</h1>
+    <form id="deleteProprietarioForm">
+      <div class="form-group">
+        <label for="deleteCod_proprietario">Cod Proprietario:</label>
+        <input type="number" class="form-control" id="deleteCod_proprietario" name="deleteCod_proprietario">
+      </div>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
+
+  <!-- Create a new ProprietarioPropriedade relation -->
+  <div class="container">
+    <h1>Create ProprietarioPropriedade</h1>
+    <form id="createProprietarioPropriedadeForm">
+      <div class="form-group">
+        <label for="ppCod_propriedade">Cod Propriedade:</label>
+        <input type="number" class="form-control" id="ppCod_propriedade" name="ppCod_propriedade">
+      </div>
+      <div class="form-group">
+        <label for="ppCod_proprietario">Cod Proprietario:</label>
+        <input type="number" class="form-control" id="ppCod_proprietario" name="ppCod_proprietario">
+      </div>
+      <div class="form-group">
+        <label for="ppDt_aquisicao">Dt Aquisicao:</label>
+        <input type="text" class="form-control" id="ppDt_aquisicao" name="ppDt_aquisicao">
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+  </div>
+
+  <!-- Create a new DonoPJ relation -->
+  <div class="container">
+    <h1>Create DonoPJ</h1>
+    <form id="createDonoPJForm">
+      <div class="form-group">
+        <label for="donoPJCod_prop_pj">Cod Prop PJ:</label>
+        <input type="text" class="form-control" id="donoPJCod_prop_pj" name="donoPJCod_prop_pj">
+      </div>
+      <div class="form-group">
+        <label for="donoPJCod_prop_pf">Cod Prop PF:</label>
+        <input type="text" class="form-control" id="donoPJCod_prop_pf" name="donoPJCod_prop_pf">
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+  </div>
+
+  <!-- Get properties of Pessoa Juridica and their owners -->
+  <div class="container">
+    <h1>List Propriedades PJ</h1>
+    <button id="listPropriedadesPJBtn" class="btn btn-primary">List Propriedades PJ</button>
+    <div id="propriedadesPJData" style="display: none;">
+      <h2>Propriedades PJ Data</h2>
+      <table class="table">
+        <tr>
+          <th>Cod Propriedade</th>
+          <th>Nome Propriedade</th>
+          <th>Area</th>
+          <th>Cod Municipio</th>
+          <th>Valor Aquisicao</th>
+          <th>Dono</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Create a new Proprietario
+      $('#createProprietarioForm').submit(function(event) {
+        event.preventDefault();
+        var data = {
+          'cod_prop_pj': $('#cod_prop_pj').val(),
+          'cod_prop_pf': $('#cod_prop_pf').val(),
+          'fone1': $('#fone1').val(),
+          'fone2': $('#fone2').val(),
+          'fone3': $('#fone3').val()
+        };
+        $.ajax({
+          url: '/proprietario',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            alert(response.message);
+            $('#createProprietarioForm').trigger('reset');
+          }
+        });
+      });
+
+      // Get information about a specific Proprietario
+      $('#getProprietarioForm').submit(function(event) {
+        event.preventDefault();
+        var cod_proprietario = $('#cod_proprietario').val();
+        $.ajax({
+          url: '/proprietario/' + cod_proprietario,
+          type: 'GET',
+          success: function(response) {
+            $('#proprietarioCod').text(response.cod_proprietario);
+            $('#proprietarioCodPropPJ').text(response.cod_prop_pj);
+            $('#proprietarioCodPropPF').text(response.cod_prop_pf);
+            $('#proprietarioFone1').text(response.fone1);
+            $('#proprietarioFone2').text(response.fone2);
+            $('#proprietarioFone3').text(response.fone3);
+            $('#proprietarioData').show();
+          },
+          error: function(xhr, status, error) {
+            alert(xhr.responseJSON.error);
+            $('#getProprietarioForm').trigger('reset');
+            $('#proprietarioData').hide();
+          }
+        });
+      });
+
+      // Update information of a specific Proprietario
+      $('#updateProprietarioForm').submit(function(event) {
+        event.preventDefault();
+        var cod_proprietario = $('#updateCod_proprietario').val();
+        var data = {
+          'cod_prop_pj': $('#updateCod_prop_pj').val(),
+          'cod_prop_pf': $('#updateCod_prop_pf').val(),
+          'fone1': $('#updateFone1').val(),
+          'fone2': $('#updateFone2').val(),
+          'fone3': $('#updateFone3').val()
+        };
+        $.ajax({
+          url: '/proprietario/' + cod_proprietario,
+          type: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            alert(response.message);
+            $('#updateProprietarioForm').trigger('reset');
+          },
+          error: function(xhr, status, error) {
+            alert(xhr.responseJSON.error);
+            $('#updateProprietarioForm').trigger('reset');
+          }
+        });
+      });
+
+      // Delete a specific Proprietario
+      $('#deleteProprietarioForm').submit(function(event) {
+        event.preventDefault();
+        var cod_proprietario = $('#deleteCod_proprietario').val();
+        $.ajax({
+          url: '/proprietario/' + cod_proprietario,
+          type: 'DELETE',
+          success: function(response) {
+            alert(response.message);
+            $('#deleteProprietarioForm').trigger('reset');
+          },
+          error: function(xhr, status, error) {
+            alert(xhr.responseJSON.error);
+            $('#deleteProprietarioForm').trigger('reset');
+          }
+        });
+      });
+
+      // Create a new ProprietarioPropriedade relation
+      $('#createProprietarioPropriedadeForm').submit(function(event) {
+        event.preventDefault();
+        var data = {
+          'cod_propriedade': $('#ppCod_propriedade').val(),
+          'cod_proprietario': $('#ppCod_proprietario').val(),
+          'dt_aquisicao': $('#ppDt_aquisicao').val()
+        };
+        $.ajax({
+          url: '/proprietario_propriedade',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            alert(response.message);
+            $('#createProprietarioPropriedadeForm').trigger('reset');
+          }
+        });
+      });
+
+      // Create a new DonoPJ relation
+      $('#createDonoPJForm').submit(function(event) {
+        event.preventDefault();
+        var data = {
+          'cod_prop_pj': $('#donoPJCod_prop_pj').val(),
+          'cod_prop_pf': $('#donoPJCod_prop_pf').val()
+        };
+        $.ajax({
+          url: '/dono_pj',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            alert(response.message);
+            $('#createDonoPJForm').trigger('reset');
+          }
+        });
+      });
+
+      // Get properties of Pessoa Juridica and their owners
+      $('#listPropriedadesPJBtn').click(function() {
+        $.ajax({
+          url: '/propriedades_pj',
+          type: 'GET',
+          success: function(response) {
+            var table = $('#propriedadesPJData table');
+            table.empty();
+            table.append('<tr><th>Cod Propriedade</th><th>Nome Propriedade</th><th>Area</th><th>Cod Municipio</th><th>Valor Aquisicao</th><th>Dono</th></tr>');
+            $.each(response, function(index, propriedade) {
+              var row = '<tr>' +
+                '<td>' + propriedade.cod_propriedade + '</td>' +
+                '<td>' + propriedade.nome_propriedade + '</td>' +
+                '<td>' + propriedade.area + '</td>' +
+                '<td>' + propriedade.cod_municipio + '</td>' +
+                '<td>' + propriedade.valor_aquisicao + '</td>' +
+                '<td>' + propriedade.dono + '</td>' +
+                '</tr>';
+              table.append(row);
+            });
+            $('#propriedadesPJData').show();
+          },
+          error: function(xhr, status, error) {
+            alert(xhr.responseJSON.error);
+            $('#propriedadesPJData').hide();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

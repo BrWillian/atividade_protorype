@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>CRUD com Bootstrap</title>
-    <!-- Inclua os arquivos CSS do Bootstrap 4.3.1 -->
+    <!-- Incluir arquivos CSS do Bootstrap 4.3.1 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody id="produtos-table">
-                <!-- Os produtos serão carregados dinamicamente aqui -->
+                <!-- Produtos serão carregados dinamicamente aqui -->
             </tbody>
         </table>
 
@@ -41,17 +41,17 @@
                 <tr>
                     <th>Código Propriedade</th>
                     <th>Código Produto</th>
-                    <th>Mês Inicial Colheita Previsto</th>
-                    <th>Mês Final Colheita Previsto</th>
-                    <th>Quantidade Prevista de Colheita</th>
-                    <th>Mês Inicial Colheita Real</th>
-                    <th>Mês Final Colheita Real</th>
-                    <th>Quantidade Real Colhida</th>
+                    <th>Data Inicial Colheita Prov.</th>
+                    <th>Data Final Colheita Prov.</th>
+                    <th>Qtd. Prov. Colheita</th>
+                    <th>Data Inicial Colheita Real</th>
+                    <th>Data Final Colheita Real</th>
+                    <th>Qtd. Real Colhida</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="producoes-table">
-                <!-- As produções serão carregadas dinamicamente aqui -->
+                <!-- Produções serão carregadas dinamicamente aqui -->
             </tbody>
         </table>
 
@@ -67,67 +67,93 @@
                 <input type="text" class="form-control" id="cod_produto" required>
             </div>
             <div class="form-group">
-                <label for="mes_ini_colheita_prov">Mês Inicial Colheita Previsto:</label>
+                <label for="mes_ini_colheita_prov">Data Inicial Colheita Prov.:</label>
                 <input type="text" class="form-control" id="mes_ini_colheita_prov" required>
             </div>
             <div class="form-group">
-                <label for="mes_fin_colheita_prov">Mês Final Colheita Previsto:</label>
+                <label for="mes_fin_colheita_prov">Data Final Colheita Prov.:</label>
                 <input type="text" class="form-control" id="mes_fin_colheita_prov" required>
             </div>
             <div class="form-group">
-                <label for="qtd_prov_colheita">Quantidade Prevista de Colheita:</label>
+                <label for="qtd_prov_colheita">Qtd. Prov. Colheita:</label>
                 <input type="text" class="form-control" id="qtd_prov_colheita" required>
             </div>
             <div class="form-group">
-                <label for="mes_ini_colheita_real">Mês Inicial Colheita Real:</label>
+                <label for="mes_ini_colheita_real">Data Inicial Colheita Real:</label>
                 <input type="text" class="form-control" id="mes_ini_colheita_real" required>
             </div>
             <div class="form-group">
-                <label for="mes_fin_colheita_real">Mês Final Colheita Real:</label>
+                <label for="mes_fin_colheita_real">Data Final Colheita Real:</label>
                 <input type="text" class="form-control" id="mes_fin_colheita_real" required>
             </div>
             <div class="form-group">
-                <label for="qtd_real_colhida">Quantidade Real Colhida:</label>
+                <label for="qtd_real_colhida">Qtd. Real Colhida:</label>
                 <input type="text" class="form-control" id="qtd_real_colhida" required>
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
-    </div>
+        <h1>Produção Anual</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Propriedade</th>
+                    <th>Tamanho</th>
+                    <th>Produto</th>
+                    <th>Quantidade Colhida</th>
+                    <th>Data de Colheita</th>
+                </tr>
+            </thead>
+            <tbody id="producao-table-body"></tbody>
+        </table>
+        <h1>Maior Rendimento de Colheita de Milho</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Propriedade</th>
+                    <th>Proprietário</th>
+                    <th>Rendimento</th>
+                </tr>
+            </thead>
+            <tbody id="rendimento-table-body"></tbody>
+        </table>
 
-    <!-- Inclua os arquivos JavaScript do jQuery 3.6 e do Bootstrap 4.3.1 -->
+
+    <!-- Incluir arquivos JS do jQuery 3.6 e do Bootstrap 4.3.1 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-        // Função para carregar os produtos da API
+        // Função para carregar os produtos
         function loadProdutos() {
             $.ajax({
                 url: '/produtos',
                 type: 'GET',
+                dataType: 'json',
                 success: function(response) {
                     var produtos = response.produtos;
-                    var produtosTable = $('#produtos-table');
-                    produtosTable.empty();
-                    produtos.forEach(function(produto) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(produto.cod_produto));
-                        row.append($('<td>').text(produto.desc_produto));
-                        var actions = $('<td>');
-                        actions.append($('<button>').text('Editar').addClass('btn btn-sm btn-primary edit-btn').data('id', produto.cod_produto));
-                        actions.append(' ');
-                        actions.append($('<button>').text('Excluir').addClass('btn btn-sm btn-danger delete-btn').data('id', produto.cod_produto));
-                        row.append(actions);
-                        produtosTable.append(row);
-                    });
+                    var tableRows = '';
+                    for (var i = 0; i < produtos.length; i++) {
+                        var produto = produtos[i];
+                        tableRows += '<tr>' +
+                            '<td>' + produto.cod_produto + '</td>' +
+                            '<td>' + produto.desc_produto + '</td>' +
+                            '<td>' +
+                            '<button class="btn btn-sm btn-primary edit-btn" data-id="' + produto.cod_produto + '">Editar</button> ' +
+                            '<button class="btn btn-sm btn-danger delete-btn" data-id="' + produto.cod_produto + '">Excluir</button>' +
+                            '</td>' +
+                            '</tr>';
+                    }
+                    $('#produtos-table').html(tableRows);
                 }
             });
         }
 
-        // Função para carregar os dados de um produto para edição
+        // Função para carregar os dados de um produto no formulário de edição
         function loadProdutoData(id) {
             $.ajax({
                 url: '/produtos/' + id,
                 type: 'GET',
+                dataType: 'json',
                 success: function(response) {
                     var produto = response.produto;
                     $('#desc_produto').val(produto.desc_produto);
@@ -136,95 +162,98 @@
         }
 
         // Função para limpar o formulário de produto
-        function clearProdutoForm() {
-            $('#produto-form').removeData('id');
+        function clearForm() {
+            $('#produto-form').data('id', '');
             $('#desc_produto').val('');
         }
 
-        // Ação de envio do formulário de produto (Cadastro/Edição)
-        $('#produto-form').submit(function(event) {
-            event.preventDefault();
+        // Ação de envio do formulário de produto (criação/atualização)
+        $('#produto-form').submit(function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
-            var method = id ? 'PUT' : 'POST';
-            var url = id ? '/produtos/' + id : '/produtos';
+            var url = '/produtos';
+            var method = 'POST';
+            if (id) {
+                url += '/' + id;
+                method = 'PUT';
+            }
             $.ajax({
                 url: url,
                 type: method,
                 dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify({ desc_produto: $('#desc_produto').val() }),
+                data: JSON.stringify({
+                    desc_produto: $('#desc_produto').val()
+                }),
                 success: function(response) {
                     alert(response.message);
                     loadProdutos();
-                    clearProdutoForm();
-                },
-                error: function(response) {
-                    alert(response.responseJSON.message);
+                    clearForm();
                 }
             });
         });
 
-        // Ação de clique no botão de edição de um produto
-        $(document).on('click', '.edit-btn', function() {
+        // Ação de click no botão de edição de produto
+        $('#produtos-table').on('click', '.edit-btn', function() {
             var id = $(this).data('id');
             loadProdutoData(id);
             $('#produto-form').data('id', id);
         });
 
-        // Ação de clique no botão de exclusão de um produto
-        $(document).on('click', '.delete-btn', function() {
+        // Ação de click no botão de exclusão de produto
+        $('#produtos-table').on('click', '.delete-btn', function() {
             var id = $(this).data('id');
-            if (confirm('Deseja excluir este produto?')) {
+            if (confirm('Deseja excluir o produto?')) {
                 $.ajax({
                     url: '/produtos/' + id,
                     type: 'DELETE',
+                    dataType: 'json',
                     success: function(response) {
                         alert(response.message);
                         loadProdutos();
-                        clearProdutoForm();
-                    },
-                    error: function(response) {
-                        alert(response.responseJSON.message);
+                        clearForm();
                     }
                 });
             }
         });
 
-        // Função para carregar as produções da API
+        // Função para carregar as produções
         function loadProducoes() {
             $.ajax({
                 url: '/producoes',
                 type: 'GET',
+                dataType: 'json',
                 success: function(response) {
                     var producoes = response.producoes;
-                    var producoesTable = $('#producoes-table');
-                    producoesTable.empty();
-                    producoes.forEach(function(producao) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(producao.cod_propriedade));
-                        row.append($('<td>').text(producao.cod_produto));
-                        row.append($('<td>').text(producao.mes_ini_colheita_prov));
-                        row.append($('<td>').text(producao.mes_fin_colheita_prov));
-                        row.append($('<td>').text(producao.qtd_prov_colheita));
-                        row.append($('<td>').text(producao.mes_ini_colheita_real));
-                        row.append($('<td>').text(producao.mes_fin_colheita_real));
-                        row.append($('<td>').text(producao.qtd_real_colhida));
-                        var actions = $('<td>');
-                        actions.append($('<button>').text('Editar').addClass('btn btn-sm btn-primary edit-btn').data('id', producao.cod_produto));
-                        actions.append(' ');
-                        actions.append($('<button>').text('Excluir').addClass('btn btn-sm btn-danger delete-btn').data('id', producao.cod_produto));
-                        row.append(actions);
-                        producoesTable.append(row);
-                    });
+                    var tableRows = '';
+                    for (var i = 0; i < producoes.length; i++) {
+                        var producao = producoes[i];
+                        tableRows += '<tr>' +
+                            '<td>' + producao.cod_propriedade + '</td>' +
+                            '<td>' + producao.cod_produto + '</td>' +
+                            '<td>' + producao.mes_ini_colheita_prov + '</td>' +
+                            '<td>' + producao.mes_fin_colheita_prov + '</td>' +
+                            '<td>' + producao.qtd_prov_colheita + '</td>' +
+                            '<td>' + producao.mes_ini_colheita_real + '</td>' +
+                            '<td>' + producao.mes_fin_colheita_real + '</td>' +
+                            '<td>' + producao.qtd_real_colhida + '</td>' +
+                            '<td>' +
+                            '<button class="btn btn-sm btn-primary edit-btn" data-id="' + producao.cod_propriedade + '">Editar</button> ' +
+                            '<button class="btn btn-sm btn-danger delete-btn" data-id="' + producao.cod_propriedade + '">Excluir</button>' +
+                            '</td>' +
+                            '</tr>';
+                    }
+                    $('#producoes-table').html(tableRows);
                 }
             });
         }
 
-        // Função para carregar os dados de uma produção para edição
+        // Função para carregar os dados de uma produção no formulário de edição
         function loadProducaoData(id) {
             $.ajax({
                 url: '/producoes/' + id,
                 type: 'GET',
+                dataType: 'json',
                 success: function(response) {
                     var producao = response.producao;
                     $('#cod_propriedade').val(producao.cod_propriedade);
@@ -239,25 +268,16 @@
             });
         }
 
-        // Função para limpar o formulário de produção
-        function clearProducaoForm() {
-            $('#producao-form').removeData('id');
-            $('#cod_propriedade').val('');
-            $('#cod_produto').val('');
-            $('#mes_ini_colheita_prov').val('');
-            $('#mes_fin_colheita_prov').val('');
-            $('#qtd_prov_colheita').val('');
-            $('#mes_ini_colheita_real').val('');
-            $('#mes_fin_colheita_real').val('');
-            $('#qtd_real_colhida').val('');
-        }
-
-        // Ação de envio do formulário de produção (Cadastro/Edição)
-        $('#producao-form').submit(function(event) {
-            event.preventDefault();
+        // Ação de envio do formulário de produção (criação/atualização)
+        $('#producao-form').submit(function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
-            var method = id ? 'PUT' : 'POST';
-            var url = id ? '/producoes/' + id : '/producoes';
+            var url = '/producoes';
+            var method = 'POST';
+            if (id) {
+                url += '/' + id;
+                method = 'PUT';
+            }
             $.ajax({
                 url: url,
                 type: method,
@@ -276,38 +296,70 @@
                 success: function(response) {
                     alert(response.message);
                     loadProducoes();
-                    clearProducaoForm();
-                },
-                error: function(response) {
-                    alert(response.responseJSON.message);
+                    clearForm();
                 }
             });
         });
 
-        // Ação de clique no botão de edição de uma produção
-        $(document).on('click', '.edit-btn', function() {
+        // Ação de click no botão de edição de produção
+        $('#producoes-table').on('click', '.edit-btn', function() {
             var id = $(this).data('id');
             loadProducaoData(id);
             $('#producao-form').data('id', id);
         });
 
-        // Ação de clique no botão de exclusão de uma produção
-        $(document).on('click', '.delete-btn', function() {
+        // Ação de click no botão de exclusão de produção
+        $('#producoes-table').on('click', '.delete-btn', function() {
             var id = $(this).data('id');
-            if (confirm('Deseja excluir esta produção?')) {
+            if (confirm('Deseja excluir a produção?')) {
                 $.ajax({
                     url: '/producoes/' + id,
                     type: 'DELETE',
+                    dataType: 'json',
                     success: function(response) {
                         alert(response.message);
                         loadProducoes();
-                        clearProducaoForm();
-                    },
-                    error: function(response) {
-                        alert(response.responseJSON.message);
+                        clearForm();
                     }
                 });
             }
+        });
+
+        $(document).ready(function() {
+            $.ajax({
+                url: "/maior_rendimento_milho",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var tableBody = $("#rendimento-table-body");
+                    $.each(data, function(index, rendimento) {
+                        var row = $("<tr>");
+                        row.append($("<td>").text(rendimento.nome_propriedade));
+                        row.append($("<td>").text(rendimento.nome_proprietario));
+                        row.append($("<td>").text(rendimento.rendimento));
+                        tableBody.append(row);
+                    });
+                }
+            });
+        });
+        $(document).ready(function() {
+            $.ajax({
+                url: "/producao_anual",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var tableBody = $("#producao-table-body");
+                    $.each(data, function(index, producao) {
+                        var row = $("<tr>");
+                        row.append($("<td>").text(producao.nome_propriedade));
+                        row.append($("<td>").text(producao.tamanho));
+                        row.append($("<td>").text(producao.desc_produto));
+                        row.append($("<td>").text(producao.qtd_total_colhida));
+                        row.append($("<td>").text(producao.data_colheita));
+                        tableBody.append(row);
+                    });
+                }
+            });
         });
 
         // Carregar produtos e produções ao carregar a página

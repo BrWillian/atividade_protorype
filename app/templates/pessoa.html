@@ -17,11 +17,6 @@
       <input type="hidden" id="pessoaFisicaId">
 
       <div class="form-group">
-        <label for="cod_prop_pf">Código Propriedade:</label>
-        <input type="text" class="form-control" id="cod_prop_pf" required>
-      </div>
-
-      <div class="form-group">
         <label for="cpf_prop">CPF:</label>
         <input type="text" class="form-control" id="cpf_prop" required>
       </div>
@@ -55,7 +50,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Código</th>
           <th>CPF</th>
           <th>Nome</th>
           <th>Data de Nascimento</th>
@@ -73,11 +67,6 @@
 
     <form id="pessoaJuridicaForm">
       <input type="hidden" id="pessoaJuridicaId">
-
-      <div class="form-group">
-        <label for="cod_prop_pj">Código Propriedade:</label>
-        <input type="text" class="form-control" id="cod_prop_pj" required>
-      </div>
 
       <div class="form-group">
         <label for="cnpj_prop">CNPJ:</label>
@@ -103,7 +92,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Código</th>
           <th>CNPJ</th>
           <th>Razão Social</th>
           <th>Data de Criação</th>
@@ -129,15 +117,14 @@
           for (const pessoaFisica of pessoasFisicas) {
             tableRows += `
               <tr>
-                <td>${pessoaFisica.cod_prop_pf}</td>
                 <td>${pessoaFisica.cpf_prop}</td>
                 <td>${pessoaFisica.nome_pf}</td>
                 <td>${pessoaFisica.dt_nasc_pf}</td>
                 <td>${pessoaFisica.rg_pf}</td>
                 <td>${pessoaFisica.cod_prop_conjuge}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" onclick="editPessoaFisica(${pessoaFisica.cod_prop_pf})">Editar</button>
-                  <button class="btn btn-sm btn-danger" onclick="deletePessoaFisica(${pessoaFisica.cod_prop_pf})">Excluir</button>
+                  <button class="btn btn-sm btn-primary" onclick="editPessoaFisica(${pessoaFisica.cpf_prop})">Editar</button>
+                  <button class="btn btn-sm btn-danger" onclick="deletePessoaFisica(${pessoaFisica.cpf_prop})">Excluir</button>
                 </td>
               </tr>
             `;
@@ -160,13 +147,12 @@
           for (const pessoaJuridica of pessoasJuridicas) {
             tableRows += `
               <tr>
-                <td>${pessoaJuridica.cod_prop_pj}</td>
                 <td>${pessoaJuridica.cnpj_prop}</td>
                 <td>${pessoaJuridica.razao_social_pj}</td>
                 <td>${pessoaJuridica.dt_cria_pj}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" onclick="editPessoaJuridica(${pessoaJuridica.cod_prop_pj})">Editar</button>
-                  <button class="btn btn-sm btn-danger" onclick="deletePessoaJuridica(${pessoaJuridica.cod_prop_pj})">Excluir</button>
+                  <button class="btn btn-sm btn-primary" onclick="editPessoaJuridica(${pessoaJuridica.cnpj_prop})">Editar</button>
+                  <button class="btn btn-sm btn-danger" onclick="deletePessoaJuridica(${pessoaJuridica.cnpj_prop})">Excluir</button>
                 </td>
               </tr>
             `;
@@ -186,7 +172,6 @@
     // Limpa os campos do formulário de Pessoa Física
     function clearPessoaFisicaForm() {
       $('#pessoaFisicaId').val('');
-      $('#cod_prop_pf').val('');
       $('#cpf_prop').val('');
       $('#nome_pf').val('');
       $('#dt_nasc_pf').val('');
@@ -197,22 +182,20 @@
     // Limpa os campos do formulário de Pessoa Jurídica
     function clearPessoaJuridicaForm() {
       $('#pessoaJuridicaId').val('');
-      $('#cod_prop_pj').val('');
       $('#cnpj_prop').val('');
       $('#razao_social_pj').val('');
       $('#dt_cria_pj').val('');
     }
 
     // Abre o formulário de edição de Pessoa Física com os dados preenchidos
-    function editPessoaFisica(cod_prop_pf) {
+    function editPessoaFisica(cpf_prop) {
       $.ajax({
-        url: `/pessoas_fisicas/${cod_prop_pf}`,
+        url: `/pessoas_fisicas/${cpf_prop}`,
         method: 'GET',
         success: function (response) {
           const pessoaFisica = response.pessoa_fisica;
 
-          $('#pessoaFisicaId').val(pessoaFisica.cod_prop_pf);
-          $('#cod_prop_pf').val(pessoaFisica.cod_prop_pf);
+          $('#pessoaFisicaId').val(pessoaFisica.cpf_prop);
           $('#cpf_prop').val(pessoaFisica.cpf_prop);
           $('#nome_pf').val(pessoaFisica.nome_pf);
           $('#dt_nasc_pf').val(pessoaFisica.dt_nasc_pf);
@@ -223,15 +206,14 @@
     }
 
     // Abre o formulário de edição de Pessoa Jurídica com os dados preenchidos
-    function editPessoaJuridica(cod_prop_pj) {
+    function editPessoaJuridica(cnpj_prop) {
       $.ajax({
-        url: `/pessoas_juridicas/${cod_prop_pj}`,
+        url: `/pessoas_juridicas/${cnpj_prop}`,
         method: 'GET',
         success: function (response) {
           const pessoaJuridica = response.pessoa_juridica;
 
-          $('#pessoaJuridicaId').val(pessoaJuridica.cod_prop_pj);
-          $('#cod_prop_pj').val(pessoaJuridica.cod_prop_pj);
+          $('#pessoaJuridicaId').val(pessoaJuridica.cnpj_prop);
           $('#cnpj_prop').val(pessoaJuridica.cnpj_prop);
           $('#razao_social_pj').val(pessoaJuridica.razao_social_pj);
           $('#dt_cria_pj').val(pessoaJuridica.dt_cria_pj);
@@ -243,7 +225,6 @@
     $('#pessoaFisicaForm').submit(function (event) {
       event.preventDefault();
 
-      const cod_prop_pf = $('#cod_prop_pf').val();
       const cpf_prop = $('#cpf_prop').val();
       const nome_pf = $('#nome_pf').val();
       const dt_nasc_pf = $('#dt_nasc_pf').val();
@@ -251,7 +232,6 @@
       const cod_prop_conjuge = $('#cod_prop_conjuge').val();
 
       const data = {
-        cod_prop_pf: cod_prop_pf,
         cpf_prop: cpf_prop,
         nome_pf: nome_pf,
         dt_nasc_pf: dt_nasc_pf,
@@ -260,11 +240,6 @@
       };
 
       let url = `/pessoas_fisicas`;
-
-      if (cod_prop_pf !== '') {
-        url += `/${cod_prop_pf}`;
-        alert("Propriedade Inexistente");
-      }
 
       $.ajax({
         url: url,
@@ -282,24 +257,17 @@
     $('#pessoaJuridicaForm').submit(function (event) {
       event.preventDefault();
 
-      const cod_prop_pj = $('#cod_prop_pj').val();
       const cnpj_prop = $('#cnpj_prop').val();
       const razao_social_pj = $('#razao_social_pj').val();
       const dt_cria_pj = $('#dt_cria_pj').val();
 
       const data = {
-        cod_prop_pj: cod_prop_pj,
         cnpj_prop: cnpj_prop,
         razao_social_pj: razao_social_pj,
         dt_cria_pj: dt_cria_pj
       };
 
       let url = `/pessoas_juridicas`;
-
-      if (cod_prop_pj !== '') {
-        url += `/${cod_prop_pj}`;
-        alert("Propriedade Inexistente");
-      }
 
       $.ajax({
         url: url,
